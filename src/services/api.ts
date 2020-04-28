@@ -2,8 +2,7 @@
 //https://us-central1-handtalk-challenge.cloudfunctions.net/getBookAuthor?bookId=9AHZty9s6IHEHYcxJJgi
 //
 
-const endpoint =
-  "https://us-central1-handtalk-challenge.cloudfunctions.net/getBookAuthor";
+const endpoint = process.env.REACT_APP_ENDPOINT_API;
 
 /**
  * Pega o author na coleção secreta metadados atraves do firebase functions
