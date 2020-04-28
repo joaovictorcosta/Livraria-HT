@@ -7,6 +7,10 @@ export interface IFirestoreBook {
   /** Preço do livro  */
   price: number;
 
-  image?: string;
+  /** Autor do livro */
+  author?: string;
 
+  /**imagem do livro */
+  image?: string;
 }
+
