@@ -4,11 +4,13 @@ import Box from "@material-ui/core/Box";
 import Book from "./Book";
 import { IFirestoreBook } from "../services/types";
 import { fbFirestore } from "../services/firebase";
+import bookListStyles from "../styles/bookList";
 
 /**
  * Renderiza a lista de livros do firestore
  */
 const BookList: React.FC<{}> = () => {
+  const classes = bookListStyles();
   const [books, setBooks] = useState<Record<string, IFirestoreBook>>({});
 
   const loadBooks = () => {
@@ -35,8 +37,7 @@ const BookList: React.FC<{}> = () => {
 
   return (
     <Box p={2}>
-      <Grid container spacing={2} justify="center"
-        alignItems="center">
+      <Grid className={classes.gridBookList} container spacing={2}  >
         {Object.entries(books).map(([key, value]) => (
           <Grid sm={6} xs={6} md={2} lg={3} item key={key}>
             <Book book={value} id={key} />
