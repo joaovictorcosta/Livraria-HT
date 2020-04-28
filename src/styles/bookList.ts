@@ -4,7 +4,6 @@ const bookListStyles = makeStyles({
   gridBookList: {
     justifyContent: "center",
   },
-
 });
 
 export default bookListStyles;
