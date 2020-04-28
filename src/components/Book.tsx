@@ -7,61 +7,59 @@ import { getBookAuthorApi } from "../services/api";
  * Livro a obtido do firestore
  */
 const Book: React.FC<{ book: IFirestoreBook, id: string }> = ({ book, id }) => {
-  const [bookFS, setBookFS] = useState<IFirestoreBook>(book);
+  const [bookFS, setBookFS] = useState<IFirestoreBook>();
+
 
   const loadImage = async (key: string) => {
+    const newBookFS = { ...book };
     const refStorage = fbStorage.ref("books");
     await refStorage.child(`${key}.jpg`).getDownloadURL().then((url) => {
       //Adiciona em newBooks o book
-      const newBookFS = { ...bookFS }
       Object.assign(newBookFS, { image: url });
-      setBookFS(newBookFS)
     });
+    return newBookFS;
   }
 
-  const loadAuthor = async (key: string) => {
-
+  const loadAuthor = async (oldBook: IFirestoreBook, key: string) => {
     getBookAuthorApi(key).then((author) => {
-
-      const newBookFS = { ...bookFS };
+      const newBookFS = { ...oldBook };
       Object.assign(newBookFS, { author: author });
-      setBookFS(newBookFS)
-      // setBooks(newBooks);
+      setBookFS(newBookFS);
     }).catch((error) => {
       console.log(error)
     });
   }
 
   useEffect(() => {
-    loadImage(id);
-    //
+    loadImage(id).then((x) => {
+      loadAuthor(x, id);
+    });
   }, []);
 
-
   return <>
-    <Box
+    {bookFS && <Box
       fontFamily="Arial"
       borderRadius="5px"
       color="#000"
       bgcolor="#f9f9f9"
       boxShadow={3}
       p={1}
-      height={300}>
+      height="300px">
       {bookFS.image && <img
         style={{
           width: "100%",
           height: "70%",
           objectFit: 'cover'
         }} src={bookFS.image}></img>}
-      <div style={{ margin: 10 }}>
-        <div >
-          <h5>{bookFS.name}</h5>
+      <div style={{ margin: 10, height: "30%", }}>
+        <div>
+          <p>{bookFS.name}</p>
         </div>
-        {book.author && <div style={{ fontSize: 14, color: "#555" }}>Autor(a): {book.author}</div>}
+        {bookFS.author && <div style={{ fontSize: 14, color: "#555" }}>Autor(a): {bookFS.author}</div>}
         <div style={{ fontSize: 14, color: "#555" }}>Preço: R$ {bookFS.price}</div>
       </div>
 
-    </Box>
+    </Box>}
   </>;
 };
 

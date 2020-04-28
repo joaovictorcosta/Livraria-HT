@@ -29,12 +29,8 @@ const BookList: React.FC<{}> = () => {
     });
   }
 
-
-
   useEffect(() => {
     loadBooks();
-
-
   }, []);
 
   return (
