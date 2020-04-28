@@ -37,29 +37,30 @@ const Book: React.FC<{ book: IFirestoreBook, id: string }> = ({ book, id }) => {
   }, []);
 
   return <>
-    {bookFS && <Box
-      fontFamily="Arial"
-      borderRadius="5px"
-      color="#000"
-      bgcolor="#f9f9f9"
-      boxShadow={3}
-      p={1}
-      height="300px">
-      {bookFS.image && <img
-        style={{
-          width: "100%",
-          height: "70%",
-          objectFit: 'cover'
-        }} src={bookFS.image}></img>}
-      <div style={{ margin: 10, height: "30%", }}>
-        <div>
-          <p>{bookFS.name}</p>
+    {bookFS &&
+      <Box
+        fontFamily="Arial"
+        borderRadius="5px"
+        color="#000"
+        bgcolor="#f9f9f9"
+        boxShadow={3}
+        p={1}
+        height="auto">
+        {bookFS.image && <img
+          style={{
+            width: "100%",
+            height: "200px",
+            objectFit: 'cover'
+          }} src={bookFS.image}></img>}
+        <div style={{ margin: 10 }}>
+          <div>
+            <p style={{ whiteSpace: "nowrap", width: "100%", textOverflow: "ellipsis", overflow: "hidden" }}>{bookFS.name}</p>
+          </div>
+          {bookFS.author && <div style={{ fontSize: 14, color: "#555" }}>Autor(a): {bookFS.author}</div>}
+          <div style={{ fontSize: 14, color: "#555" }}>Preço: R$ {bookFS.price}</div>
         </div>
-        {bookFS.author && <div style={{ fontSize: 14, color: "#555" }}>Autor(a): {bookFS.author}</div>}
-        <div style={{ fontSize: 14, color: "#555" }}>Preço: R$ {bookFS.price}</div>
-      </div>
 
-    </Box>}
+      </Box>}
   </>;
 };
 
