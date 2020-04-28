@@ -39,6 +39,7 @@ const Book: React.FC<{ book: IFirestoreBook, id: string }> = ({ book, id }) => {
   return <>
     {bookFS &&
       <Box
+        style={{ paddingLeft: 0, paddingTop: 0, paddingRight: 0 }}
         fontFamily="Arial"
         borderRadius="5px"
         color="#000"
@@ -46,17 +47,23 @@ const Book: React.FC<{ book: IFirestoreBook, id: string }> = ({ book, id }) => {
         boxShadow={3}
         p={1}
         height="auto">
-        {bookFS.image && <img
-          style={{
-            width: "100%",
-            height: "200px",
-            objectFit: 'cover'
-          }} src={bookFS.image}></img>}
+        {bookFS.image &&
+          <img
+            style={{
+              borderRadius: 5,
+              width: "100%",
+              height: "200px",
+              objectFit: 'cover'
+            }}
+
+            src={bookFS.image}
+          />
+        }
         <div style={{ margin: 10 }}>
           <div>
             <p style={{ whiteSpace: "nowrap", width: "100%", textOverflow: "ellipsis", overflow: "hidden" }}>{bookFS.name}</p>
           </div>
-          {bookFS.author && <div style={{ fontSize: 14, color: "#555" }}>Autor(a): {bookFS.author}</div>}
+          {bookFS.author && <div style={{ fontSize: 14, color: "#555", whiteSpace: "nowrap", width: "100%", textOverflow: "ellipsis", overflow: "hidden" }}>Autor(a): {bookFS.author}</div>}
           <div style={{ fontSize: 14, color: "#555" }}>Preço: R$ {bookFS.price}</div>
         </div>
 
