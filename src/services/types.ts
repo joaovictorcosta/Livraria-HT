@@ -6,4 +6,7 @@ export interface IFirestoreBook {
   name: string;
   /** Preço do livro  */
   price: number;
+
+  image?: string;
+
 }
