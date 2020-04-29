@@ -5,6 +5,8 @@ import Book from "./Book";
 import { IFirestoreBook } from "../services/types";
 import { fbFirestore } from "../services/firebase";
 import bookListStyles from "../styles/bookList";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
 
 /**
  * Renderiza a lista de livros do firestore
@@ -12,6 +14,7 @@ import bookListStyles from "../styles/bookList";
 const BookList: React.FC<{}> = () => {
   const classes = bookListStyles();
   const [books, setBooks] = useState<Record<string, IFirestoreBook>>({});
+  const [loading, setLoading] = useState(true);
 
   const loadBooks = () => {
     const newBooks = { ...books };
@@ -28,6 +31,8 @@ const BookList: React.FC<{}> = () => {
       });
       setBooks(newBooks);
 
+    }).catch((err) => {
+      console.log(err);
     });
   }
 
@@ -35,9 +40,23 @@ const BookList: React.FC<{}> = () => {
     loadBooks();
   }, []);
 
+  useEffect(() => {
+    setLoading(false);
+  }, [books]);
+
   return (
     <Box p={2}>
+
       <Grid className={classes.gridBookList} container spacing={2}  >
+        <Fade
+          in={loading}
+          style={{
+            transitionDelay: loading ? '1000ms' : '0ms',
+          }}
+          unmountOnExit
+        >
+          <CircularProgress />
+        </Fade>
         {Object.entries(books).map(([key, value]) => (
           <Grid sm={6} xs={6} md={2} lg={3} item key={key}>
             <Book book={value} id={key} />

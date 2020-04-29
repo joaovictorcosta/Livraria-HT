@@ -7,6 +7,9 @@ import { fbStorage } from "../services/firebase";
 import { getBookAuthorApi } from "../services/api";
 import bookStyles from "../styles/book";
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
+import Tooltip from '@material-ui/core/Tooltip';
 
 /**
  * Livro a obtido do firestore
@@ -14,13 +17,18 @@ import Typography from '@material-ui/core/Typography';
 const Book: React.FC<{ book: IFirestoreBook, id: string }> = ({ book, id }) => {
   const classes = bookStyles();
   const [bookFS, setBookFS] = useState<IFirestoreBook>();
+  const [loading, setLoading] = useState(true);
 
   const loadImage = async (key: string) => {
     const newBookFS = { ...book };
     const refStorage = fbStorage.ref("books");
+    setLoading(true);
     await refStorage.child(`${key}.jpg`).getDownloadURL().then((url) => {
       //Adiciona em newBooks o book
       Object.assign(newBookFS, { image: url });
+    }).catch((err) => {
+      setLoading(false);
+      console.log(err);
     });
     return newBookFS;
   }
@@ -29,38 +37,59 @@ const Book: React.FC<{ book: IFirestoreBook, id: string }> = ({ book, id }) => {
     getBookAuthorApi(key).then((author) => {
       const newBookFS = { ...oldBook };
       Object.assign(newBookFS, { author: author });
+      setLoading(false);
       setBookFS(newBookFS);
-    }).catch((error) => {
-      console.log(error)
+
+    }).catch((err) => {
+      setLoading(false);
+      console.log(err)
     });
   }
 
   useEffect(() => {
-    loadImage(id).then((x) => {
-      loadAuthor(x, id);
+    loadImage(id).then((result) => {
+      loadAuthor(result, id);
     });
   }, []);
 
   return <>
-    {bookFS &&
-      <Card className={classes.cardBook}>
+
+    <Card className={classes.cardBook}>
+      {loading && <CardContent className={classes.cardContentProgress}>
+        <Fade
+          in={loading}
+          style={{
+            transitionDelay: loading ? '1000ms' : '0ms',
+          }}
+          unmountOnExit
+        >
+          <CircularProgress />
+        </Fade>
+      </CardContent>}
+      {(bookFS && !loading) && <>
         <CardMedia
           className={classes.imageBook}
           image={bookFS.image}
         />
         <CardContent>
-          <Typography noWrap gutterBottom variant="h6" component="h3">
-            {bookFS.name}
-          </Typography>
+          <Tooltip title={bookFS.name}>
+            <Typography noWrap gutterBottom variant="h6" component="h3">
+              {bookFS.name}
+            </Typography>
+          </Tooltip>
+
           <Typography variant="body2" color="textSecondary" component="p">
             Autor(a): {bookFS.author}
           </Typography>
+
           <Typography variant="body2" color="textSecondary" component="p">
             Preço: R$ {bookFS.price}
           </Typography>
         </CardContent>
-      </Card>
-    }
+      </>
+      }
+    </Card>
+
   </>;
 };
 
