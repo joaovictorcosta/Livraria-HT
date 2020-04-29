@@ -20,9 +20,10 @@ const Book: React.FC<{ book: IFirestoreBook, id: string }> = ({ book, id }) => {
   const [loading, setLoading] = useState(true);
 
   const loadImage = async (key: string) => {
+    setLoading(true);
     const newBookFS = { ...book };
     const refStorage = fbStorage.ref("books");
-    setLoading(true);
+
     await refStorage.child(`${key}.jpg`).getDownloadURL().then((url) => {
       //Adiciona em newBooks o book
       Object.assign(newBookFS, { image: url });
